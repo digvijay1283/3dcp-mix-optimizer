@@ -1,0 +1,44 @@
+{
+  "target": "28-day compressive strength, cast specimens [MPa]",
+  "features": [
+    "wb",
+    "fa_frac",
+    "sf_frac",
+    "ab",
+    "sp_pct",
+    "binder_kg_m3"
+  ],
+  "model": "ridge",
+  "n_train": 182,
+  "n_papers": 76,
+  "cv_r2": 0.3882657468710081,
+  "cv_mae_mpa": 11.040550174619128,
+  "cv_rmse_mpa": 13.421847931365729,
+  "train_feature_range": {
+    "wb": [
+      0.1428750784682988,
+      0.578
+    ],
+    "fa_frac": [
+      0.0,
+      0.6998381877022654
+    ],
+    "sf_frac": [
+      0.0,
+      0.4
+    ],
+    "ab": [
+      0.3300970873786408,
+      3.789473684210526
+    ],
+    "sp_pct": [
+      0.0,
+      3.4000000000000004
+    ],
+    "binder_kg_m3": [
+      418.0,
+      1593.0
+    ]
+  },
+  "source": "Monkman, Dataset of 3D Printable Concrete Mix Designs, Zenodo 10.5281/zenodo.15333235 (CC BY 4.0)"
+}

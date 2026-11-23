@@ -1,0 +1,15 @@
+{
+  "sieve_diameters_um": [0.05, 0.10, 0.20, 0.50, 1.00, 2.00, 5.00, 10.00, 20.00, 45.00, 90.00, 150.00, 300.00, 600.00, 1180.00, 2360.00],
+  "materials": {
+    "opc_53":      {"name": "OPC 53 Grade Cement", "density_kg_m3": 3150, "cost_inr_kg": 8.0,  "co2_factor": 0.820, "psd_passing": [0.0, 0.0, 0.0, 1.0, 6.0, 14.0, 29.0, 48.0, 70.0, 91.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]},
+    "fly_ash":     {"name": "Class F Fly Ash",     "density_kg_m3": 2200, "cost_inr_kg": 3.5,  "co2_factor": 0.020, "psd_passing": [0.0, 0.0, 0.0, 2.5, 8.0, 20.0, 48.0, 75.0, 92.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]},
+    "silica_fume": {"name": "Silica Fume 920D",    "density_kg_m3": 2220, "cost_inr_kg": 32.0, "co2_factor": 0.030, "psd_passing": [0.0, 22.0, 78.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]},
+    "fine_sand":   {"name": "Fine Sand (0.15-0.6)", "density_kg_m3": 2650, "cost_inr_kg": 1.8,  "co2_factor": 0.005, "psd_passing": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 45.0, 100.0, 100.0, 100.0]},
+    "medium_sand": {"name": "Medium Sand (0.6-2.36)","density_kg_m3": 2650, "cost_inr_kg": 1.8,  "co2_factor": 0.005, "psd_passing": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 55.0, 100.0]}
+  },
+  "liquid_admixtures": {
+    "water": {"density_kg_m3": 1000, "cost_inr_l": 0.10, "co2_factor": 0.000},
+    "pce_sp": {"density_kg_m3": 1090, "cost_inr_l": 160.0, "co2_factor": 0.750},
+    "vma":    {"density_kg_m3": 1050, "cost_inr_l": 220.0, "co2_factor": 0.500}
+  }
+}

@@ -1,0 +1,1 @@
+This dataset contains standardized mixture-composition and rheological-property data compiled from published studies on three-dimensional printable concrete. The dataset includes response-specific records for static yield stress, dynamic yield stress, and plastic viscosity. Source publications are cited in the dataset.

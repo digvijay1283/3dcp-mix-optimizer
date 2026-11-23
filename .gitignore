@@ -1,0 +1,17 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit secrets (Do not commit to public repositories)
+.streamlit/secrets.toml
+
+# App runtime-generated mix logs
+data/mixes.csv
+
