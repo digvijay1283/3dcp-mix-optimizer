@@ -22,7 +22,7 @@ def header(ai_label: str, ai_live: bool) -> str:
         '<div class="hdr"><div class="brand">' + LOGO +
         '<div><h1>3DCP Mix Designer</h1>'
         '<p>Multilevel MAA particle packing for 3D-printed concrete. Move a slider and the packing, '
-        'printability, strength, cost and carbon update together.</p></div></div>'
+        'printability, cost and carbon update together.</p></div></div>'
         f'<span class="chip {state}"><i class="dot"></i>{escape(ai_label)}</span></div>'
     )
 
@@ -116,7 +116,7 @@ def copilot_context(row: dict) -> str:
         ("Results", [
             line("Fit to target R²", f"{row['r2_multilevel']:.3f}"), line("Packing density Φ", f"{row['phi']:.3f}"),
             line("Yield stress", f"{row['tau0_kpa']:.1f}", "kPa"), line("Flow spread", f"{row['flow_mm']:.0f}", "mm"),
-            line("Max layers", f"{row['n_max']:,}"), line("Strength", f"{row['fck_mpa']:.0f}", "MPa"),
+            line("Max layers", f"{row['n_max']:,}"),
             line("Cost", f"₹{row['cost_inr_m3']:,.0f}", "/m³"), line("Carbon", f"{row['carbon_kg_co2_m3']:,.0f}", "kg CO₂/m³")]),
     ]
     body = "".join(f'<h4>{escape(t)}</h4><dl>{"".join(ls)}</dl>' for t, ls in groups)

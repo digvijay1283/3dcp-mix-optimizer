@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from engine import copilot, optimization, pipeline, strength
+from engine import copilot, optimization, pipeline
 from ui import components as ui
 from ui import theme
 
@@ -91,7 +91,7 @@ st.markdown(ui.readouts([
 ]), unsafe_allow_html=True)
 
 tab_psd, tab_ml, tab_batch, tab_ai = st.tabs(
-    ["PSD curves & diagnostics", "Surface & strength", "Batching & cost", "AI Co-Pilot"]
+    ["PSD curves & diagnostics", "3D Packing surface", "Batching & cost", "AI Co-Pilot"]
 )
 
 # ---------------------------------------------------------------- Tab 1: PSD + diagnostics
@@ -179,7 +179,7 @@ with tab_psd:
             dict(label="Max buildable height", value=f"{rheo['h_max_m']:.2f}", unit="m"),
         ]), unsafe_allow_html=True)
 
-# ---------------------------------------------------------------- Tab 2: 3D surface + strength
+# ---------------------------------------------------------------- Tab 2: 3D Packing surface
 with tab_ml:
     p_axis, q1_axis, z = pipeline.phi_surface(q2)
     surf = go.Figure(go.Surface(
@@ -202,37 +202,19 @@ with tab_ml:
     st.plotly_chart(surf, width="stretch", config=theme.PLOT_CONFIG)
     st.write("")
 
-    if rheo["fck_source"] == "model":
-        fck_item = dict(label="28-day strength (cast)", value=f"{rheo['fck_mpa']:.1f}", unit="MPa",
-                        note=f"± {rheo['fck_mae_mpa']:.0f} MPa typical error")
-    else:
-        fck_item = dict(label="28-day strength", value=f"{rheo['fck_mpa']:.1f}", unit="MPa",
-                        note="Unvalidated placeholder", status="warn")
     st.markdown(ui.readouts([
-        fck_item,
         dict(label="Flow spread", value=f"{rheo['flow_mm']:.1f}", unit="mm",
              status="ok" if rheo["flow_in_window"] else "warn",
              note="In window" if rheo["flow_in_window"] else "Outside 140–170 mm"),
         dict(label="Static yield stress", value=f"{rheo['tau0_kpa']:.1f}", unit="kPa"),
+        dict(label="Packing density (Φ)", value=f"{rheo['phi']:.3f}",
+             note=f"{rheo['voids_pct']:.1f}% voids"),
     ]), unsafe_allow_html=True)
 
-    if rheo["fck_source"] == "model":
-        meta = strength.load_model()["meta"]
-        st.markdown(
-            f'<p class="note">Strength comes from a ridge regression trained on {meta["n_train"]} published 3DCP mixes '
-            f'({meta["n_papers"]} papers, Monkman dataset). Tested by holding out whole papers: R² {meta["cv_r2"]:.2f}, '
-            f'typical error about {meta["cv_mae_mpa"]:.0f} MPa. Treat it as indicative: the data comes from many labs and '
-            'has few mixes at W/B 0.26 or below. The surface shows Φ over (p, q₁) at the current q₂.</p>',
-            unsafe_allow_html=True)
-        if rheo["fck_outside_range"]:
-            st.markdown(ui.check("warn", "Outside the training range",
-                                 "The strength model has not seen mixes like this for: " + ", ".join(rheo["fck_outside_range"]) +
-                                 ". Treat the estimate with extra caution."), unsafe_allow_html=True)
-    else:
-        st.markdown(ui.check("warn", "No trained strength model found",
-                             "Showing the empirical placeholder formula, which is not validated against data. "
-                             "Run ml/train_strength.py --target cast --model ridge --save to create the model."),
-                    unsafe_allow_html=True)
+    st.markdown(
+        '<p class="note">The 3D surface shows wet packing density Φ over powder breakpoint p and powder modulus q₁ '
+        'at the current aggregate modulus q₂.</p>',
+        unsafe_allow_html=True)
 
 # ---------------------------------------------------------------- Tab 3: batching
 with tab_batch:

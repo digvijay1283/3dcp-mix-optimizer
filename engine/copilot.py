@@ -33,15 +33,8 @@ def suggested_prompts(row: dict) -> list:
         out.append("Why is the packing density so high, and how far can I trust the layer count?")
     if row["r2_multilevel"] < 0.95:
         out.append("How can I improve the fit between the blended mix and the target curve?")
-    out.append("How reliable is the strength estimate for this mix?")
     out.append("What is the weakest part of this mix right now?")
     return out[:3]
-
-
-def _strength_basis(row: dict) -> str:
-    if row.get("fck_source") == "model":
-        return f"data-driven model trained on published 3DCP mixes, typical error about {row['fck_mae_mpa']:.0f} MPa"
-    return "empirical placeholder formula, not validated"
 
 
 def build_system_prompt(row: dict) -> str:
@@ -57,7 +50,6 @@ def build_system_prompt(row: dict) -> str:
         f"- Multilevel R2={row['r2_multilevel']:.4f} (single-curve R2={row['r2_single']:.4f})\n"
         f"- Wet packing density={row['phi']:.3f}, yield stress={row['tau0_kpa']:.2f} kPa, "
         f"flow={row['flow_mm']:.1f} mm, max layers={row['n_max']}\n"
-        f"- 28-day strength estimate={row['fck_mpa']:.1f} MPa ({_strength_basis(row)})\n"
         f"- Cost={row['cost_inr_m3']:.0f} INR/m3, carbon={row['carbon_kg_co2_m3']:.0f} kg CO2/m3"
     )
 
