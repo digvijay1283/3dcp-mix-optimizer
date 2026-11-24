@@ -2,8 +2,8 @@
 
 from typing import Iterator
 
-GEMINI_MODEL = "gemini-2.5-flash"
-GEMINI_LABEL = "Gemini 2.5 Flash"
+GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_LABEL = "Gemini 2.0 Flash"
 
 QUICK_PROMPTS = {
     "Diagnose extrudability": "Diagnose whether this mix is extrudable and pumpable. Check flow spread, nozzle choking and yield stress.",
@@ -113,17 +113,39 @@ def stream_reply(row: dict, history: list, question: str, api_key: str | None) -
             for m in history
         ]
         contents.append(types.Content(role="user", parts=[types.Part(text=question)]))
-        stream = client.models.generate_content_stream(
-            model=GEMINI_MODEL,
-            contents=contents,
-            config=types.GenerateContentConfig(system_instruction=build_system_prompt(row)),
-        )
-        got_any = False
-        for chunk in stream:
-            if chunk.text:
-                got_any = True
-                yield chunk.text
-        if not got_any:
-            yield rule_based_reply(row, question)
+        models_to_try = [GEMINI_MODEL, "gemini-1.5-flash"]
+        last_exc = None
+        for m_name in models_to_try:
+            try:
+                stream = client.models.generate_content_stream(
+                    model=m_name,
+                    contents=contents,
+                    config=types.GenerateContentConfig(system_instruction=build_system_prompt(row)),
+                )
+                got_any = False
+                for chunk in stream:
+                    if chunk.text:
+                        got_any = True
+                        yield chunk.text
+                if got_any:
+                    return
+            except Exception as e:
+                last_exc = e
+                err_str = str(e)
+                if "403" in err_str or "API_KEY_INVALID" in err_str or "Forbidden" in err_str:
+                    break
+                continue
+        if last_exc:
+            raise last_exc
+        yield rule_based_reply(row, question)
     except Exception as exc:  # network/quota/auth failures must not break the demo
-        yield f"_(Gemini unavailable: {type(exc).__name__}. Showing offline analysis.)_\n\n" + rule_based_reply(row, question)
+        err_str = str(exc)
+        if "403" in err_str or "Forbidden" in err_str or "policy" in err_str:
+            detail = "API key restricted or forbidden by policy"
+        elif "400" in err_str or "API_KEY_INVALID" in err_str:
+            detail = "Invalid API key"
+        elif "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+            detail = "Quota exceeded"
+        else:
+            detail = type(exc).__name__
+        yield f"_(Gemini unavailable: {detail}. Showing offline analysis.)_\n\n" + rule_based_reply(row, question)
